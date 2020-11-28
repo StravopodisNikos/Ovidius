@@ -332,8 +332,6 @@ void loop (void)
     } // END IF META ERROR
 
       END_METAMORPHOSIS = true;
-      END_ACTION        = false;
-      END_HOME          = false;
    }  //  END while !END_META
    
    }  // END IF META MODE (controled by user input) 
@@ -343,14 +341,12 @@ void loop (void)
    */
   if( ( strcmp(user_input_string.c_str(),act_exec) - nl_char_shifting == 0 ) )
   {
-  while( (END_METAMORPHOSIS) && (!END_ACTION) )
+  while(!END_ACTION)
   {
     Serial.println("Begin ACTION...");
     delay(1000);
     
-    END_METAMORPHOSIS = false;
     END_ACTION        = true;
-    END_HOME          = false;
   } //  END while !END_ACT (controled by user input but not ready yet)
 
   } // END IF ACT MODE (controled by user input)
@@ -360,6 +356,8 @@ void loop (void)
    */
   if( ( strcmp(user_input_string.c_str(),home_exec)-nl_char_shifting == 0 ) )
   {
+    while(!END_HOME)
+    {
         Serial.println("BEGIN HOMING...");
         
         for (int pseudo_cnt = 0; pseudo_cnt < TOTAL_PSEUDOS_CONNECTED; pseudo_cnt++) 
@@ -442,13 +440,15 @@ void loop (void)
 
           homeExecution = false;
         }
-        
-        END_METAMORPHOSIS = false;
-        END_ACTION        = false;
-        END_HOME          = true;
+
+        END_HOME          = true; // to exit while loop
+
+    } // END WHILE FOR HOMING
+    
   } // END IF HOME MODE
 
 
+  // for next loop start
   END_METAMORPHOSIS = false;
   END_ACTION        = false;
   END_HOME          = false;
@@ -456,6 +456,6 @@ void loop (void)
   //delay(250);
   
   time_now_micros = micros();
-  while(micros() < time_now_micros + 500){}
+  while(micros() < time_now_micros + 2000){} //500
   
 } // END LOOP  

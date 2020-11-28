@@ -53,6 +53,7 @@ volatile bool saved_to_eeprom             = false;
 
 volatile bool homingHallActivated   = false;
 volatile bool limitHallActivated    = false;
+volatile int  activation_cnt         = 0;
 
 // bytes accessed by loop + ISR
 volatile byte motor_new_state;
@@ -110,8 +111,8 @@ void setup (void)
   digitalWrite(RELAY_lock_Pin2, LOW);                  //  remains locked when when NO connected
 
 // SLAVE EXTERNAL INTERRUPTS CONFIGURATION
-  //attachInterrupt(digitalPinToInterrupt(pseudoLimitSwitch_Pin), changePseudoDirInterrupt, RISING);
-  //attachInterrupt(digitalPinToInterrupt(hallSwitch_Pin), beginHomingCalibrationInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(pseudoLimitSwitch_Pin), changePseudoDirInterrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(hallSwitch_Pin), beginHomingCalibrationInterrupt, RISING);
   
   homingHallActivated = false;
   limitHallActivated  = false;
@@ -120,7 +121,7 @@ void setup (void)
   SPCR |= _BV(SPE);           // turn on SPI in slave mode
 
   SPCR |= _BV(SPIE);          // turn on interrupts
-  //SPI.attachInterrupt();
+  SPI.attachInterrupt();
   //digitalWrite(TXled_Pin,LOW); digitalWrite(RXled_Pin,LOW);
   
 // READ SETTINGS FROM EEPROM
@@ -427,7 +428,7 @@ void loop (void)
   //delay(250);           // specify frequency slave receives/responds
   
   time_now_micros = micros();
-  while(micros() < time_now_micros + 500){}
+  while(micros() < time_now_micros + 2000){} //500
 }  // end of loop
 
 /*
@@ -436,9 +437,11 @@ void loop (void)
 void changePseudoDirInterrupt()
 {
   limitHallActivated = true;
+  activation_cnt++;
 }
 
 void beginHomingCalibrationInterrupt()
 {
   homingHallActivated = true;
+  activation_cnt = 0;
 }
