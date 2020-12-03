@@ -11,7 +11,7 @@
  * CONFIGURE all the system-dependent-arrays
  */
 int pseudoID  = PSEUDO1_ID;                 // ID must change regarding pseudojoint!!
-int ssPins[1] = {SSpinPseudo1};
+int ssPins[1] = {SSpinPseudo2};
 
 /*
  * EXTERN LIBRARY DEFINED VARIABLES

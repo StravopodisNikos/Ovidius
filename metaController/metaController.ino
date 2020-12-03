@@ -25,7 +25,7 @@ byte desiredAnatomy[] = {2,4};                  // initialize ci for desired ana
 const int TOTAL_PSEUDOS_CONNECTED = 1;
 
 int pseudoIDs[]       = {PSEUDO1_ID};
-int ssPins[]          = {SSpinPseudo1};
+int ssPins[]          = {SSpinPseudo2};
 byte desiredAnatomy[nPseudoJoints];
 byte anatomy_counter  = 0;                         // just to check repeat mode
 
